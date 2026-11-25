@@ -4,28 +4,39 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 import os
 from typing import AsyncGenerator
-from mcp import ClientSession, StdioServerParameters
-from mcp.client.stdio import stdio_client
+from mcp import ClientSession
+# from mcp import StdioServerParameters
+# from mcp.client.stdio import stdio_client
+from mcp.client.streamable_http import streamable_http_client
 from mcp.shared.exceptions import MCPError
 from mcp.types import LoggingLevel
 
 
-def create_stdio_parameters(server_dir: Path) -> StdioServerParameters:
-    """Configures process parameters to spawn the standalone MCP v2 server."""
-    # Strip parent virtual environment so child uv launches cleanly
-    env = dict(os.environ)
-    env.pop("VIRTUAL_ENV", None)
-    return StdioServerParameters(
-        command="uv",
-        args=["run", "--directory", str(server_dir), "start"],
-        env=env,
-    )
+# def create_stdio_parameters(server_dir: Path) -> StdioServerParameters:
+#     """Configures process parameters to spawn the standalone MCP v2 server."""
+#     # Strip parent virtual environment so child uv launches cleanly
+#     env = dict(os.environ)
+#     env.pop("VIRTUAL_ENV", None)
+#     return StdioServerParameters(
+#         command="uv",
+#         args=["run", "--directory", str(server_dir), "start"],
+#         env=env,
+#     )
+# 
+# 
+# @asynccontextmanager
+# async def connect_stdio(server_params: StdioServerParameters) -> AsyncGenerator[ClientSession, None]:
+#     """Asynchronous context manager establishing connection and managing ClientSession lifecycle."""
+#     async with stdio_client(server_params) as (read, write):
+#         async with ClientSession(read, write) as session:
+#             await session.initialize()
+#             yield session
 
 
 @asynccontextmanager
-async def connect_stdio(server_params: StdioServerParameters) -> AsyncGenerator[ClientSession, None]:
-    """Asynchronous context manager establishing connection and managing ClientSession lifecycle."""
-    async with stdio_client(server_params) as (read, write):
+async def connect_streamable_http(url: str = "http://127.0.0.1:6162/mcp") -> AsyncGenerator[ClientSession, None]:
+    """Asynchronous context manager connecting to a remote MCP v2 server over Streamable HTTP."""
+    async with streamable_http_client(url) as (read, write):
         async with ClientSession(read, write) as session:
             await session.initialize()
             yield session

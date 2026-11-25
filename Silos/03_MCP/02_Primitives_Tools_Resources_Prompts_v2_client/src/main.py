@@ -1,9 +1,6 @@
 import asyncio
-from pathlib import Path
-
 from mcp_client_v2 import (
-    create_stdio_parameters,
-    connect_stdio,
+    connect_streamable_http,
     ping_server,
     set_server_logging,
     fetch_tools,
@@ -17,21 +14,16 @@ from mcp_client_v2 import (
     render_prompt,
 )
 
+SERVER_URL = "http://127.0.0.1:6162/mcp"
+
 
 async def run_client():
     print("=" * 70)
-    print(" [CLIENT] Standalone MCP v2 Client Connecting to Server")
+    print(" [CLIENT] Standalone MCP v2 Client Connecting via Streamable HTTP")
+    print(f" [CLIENT] Target Server: {SERVER_URL}")
     print("=" * 70)
 
-    # Locate server project folder
-    server_dir = Path(__file__).resolve().parent.parent.parent / "02_Primitives_Tools_Resources_Prompts_v2_server"
-    if not server_dir.exists():
-        server_dir = Path(__file__).resolve().parent.parent.parent / "server"
-
-    server_params = create_stdio_parameters(server_dir)
-    print(f"Connecting to standalone server at: {server_dir}")
-
-    async with connect_stdio(server_params) as session:
+    async with connect_streamable_http(SERVER_URL) as session:
         print("✔ Handshake successful with remote MCP v2 Server!\n")
 
         # 0. System APIs
@@ -90,7 +82,7 @@ async def run_client():
         print(f"Compiled Prompt:\n{prompt.messages[0].content.text}")
 
     print("\n" + "=" * 70)
-    print("✔ Standalone Client run completed successfully!")
+    print("✔ Standalone Client run completed successfully over Streamable HTTP!")
     print("=" * 70)
 
 

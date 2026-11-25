@@ -22,10 +22,10 @@ def system_ping() -> dict:
         "python_version": sys.version.split()[0]
     }
 
-async def run_stdio():
-    """Runs the server over stdio (standard input/output child process)."""
-    print("[MCP] Starting FastMCP Server on stdio transport...", file=sys.stderr)
-    await mcp_server.run_stdio_async()
+# async def run_stdio():
+#     """Runs the server over stdio (standard input/output child process)."""
+#     print("[MCP] Starting FastMCP Server on stdio transport...", file=sys.stderr)
+#     await mcp_server.run_stdio_async()
 
 async def run_sse(port: int = 8000):
     """Runs the server over HTTP with Server-Sent Events (SSE)."""

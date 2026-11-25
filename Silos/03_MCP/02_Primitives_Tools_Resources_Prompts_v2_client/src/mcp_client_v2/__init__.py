@@ -1,6 +1,7 @@
 from .system import (
-    create_stdio_parameters,
-    connect_stdio,
+    # create_stdio_parameters,
+    # connect_stdio,
+    connect_streamable_http,
     ping_server,
     set_server_logging,
 )
@@ -16,8 +17,9 @@ from .prompts import fetch_prompts, render_prompt
 from .completions import request_completion
 
 __all__ = [
-    "create_stdio_parameters",
-    "connect_stdio",
+    # "create_stdio_parameters",
+    # "connect_stdio",
+    "connect_streamable_http",
     "ping_server",
     "set_server_logging",
     "fetch_tools",
