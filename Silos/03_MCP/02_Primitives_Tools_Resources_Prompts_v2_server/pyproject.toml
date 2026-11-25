@@ -1,0 +1,20 @@
+[project]
+name = "mcp-server-v2"
+version = "0.2.0"
+description = "Standalone MCP v2 Server (Tools, Resources, Prompts)"
+requires-python = ">=3.13"
+dependencies = [
+    "mcp>=2.0.0",
+    "pydantic>=2.10.0",
+    "anyio>=4.5.0",
+    "uvicorn>=0.30.0",
+    "starlette>=0.40.0"
+]
+
+[project.scripts]
+start = "main:main"
+run = "main:main"
+
+[build-system]
+requires = ["uv_build>=0.13.1,<0.14.0"]
+build-backend = "uv_build"

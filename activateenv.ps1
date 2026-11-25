@@ -1,0 +1,1 @@
+New-Item -ItemType Directory -Path "D:\Ai Learning Projects\.vscode" -Force; Set-Content -Path "D:\Ai Learning Projects\.vscode\settings.json" -Value '{"python.defaultInterpreterPath": "${fileDirname}/.venv/Scripts/python.exe"}'
