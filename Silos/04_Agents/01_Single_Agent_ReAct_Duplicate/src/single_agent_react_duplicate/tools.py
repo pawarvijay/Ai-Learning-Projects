@@ -1,11 +1,13 @@
-from langchain_core.tools import tool
+from langchain_mcp_adapters.client import MultiServerMCPClient
+
+MCP_SERVERS = {
+    "mcp_v2": {
+        "transport": "streamable_http",
+        "url": "http://127.0.0.1:6162/mcp",
+    }
+}
 
 
-@tool
-def calculate_discount(price: float, discount_pct: float) -> str:
-    """Calculates discounted price given price and discount percentage."""
-    final_price = price * (1 - discount_pct / 100)
-    return f"Final discounted price is ${final_price:.2f}"
-
-
-tools = [calculate_discount]
+async def load_mcp_tools():
+    client = MultiServerMCPClient(MCP_SERVERS)
+    return await client.get_tools()

@@ -2,26 +2,23 @@ from langgraph.graph import StateGraph, START, END
 from langgraph.prebuilt import ToolNode
 
 from .state import AgentState
-from .tools import tools
-from .model import model_with_tools
-
-
-def call_model(state: AgentState):
-    """Invokes the tool-bound LLM with the current message history."""
-    response = model_with_tools.invoke(state["messages"])
-    return {"messages": [response]}
+from .model import get_model
 
 
 def should_continue(state: AgentState):
-    """Routes to 'tools' if the last message has tool calls, otherwise ends."""
     last_message = state["messages"][-1]
     if getattr(last_message, "tool_calls", None):
         return "tools"
     return END
 
 
-def build_react_agent():
-    """Builds and compiles the single-agent ReAct StateGraph."""
+def build_react_agent(tools):
+    model_with_tools = get_model(tools)
+
+    async def call_model(state: AgentState):
+        response = await model_with_tools.ainvoke(state["messages"])
+        return {"messages": [response]}
+
     workflow = StateGraph(AgentState)
     workflow.add_node("agent", call_model)
     workflow.add_node("tools", ToolNode(tools))

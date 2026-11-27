@@ -1,18 +1,20 @@
+import asyncio
+from .tools import load_mcp_tools
 from .graph import build_react_agent
 
 
-def main():
-    """Runs the single-agent ReAct tool-calling loop on a sample query."""
+async def run_agent():
     print("=" * 65)
-    print(" PATTERN: 2. REACT TOOL LOOP (SINGLE-AGENT)")
-    print(" Flow: START -> Agent <-> ToolNode -> END")
+    print(" PATTERN: 2. REACT TOOL LOOP (SINGLE-AGENT + MCP)")
+    print(" Flow: START -> Agent <-> ToolNode(MCP) -> END")
     print("=" * 65)
 
-    agent = build_react_agent()
-    query = "Calculate a 20% discount on a $250 item."
+    tools = await load_mcp_tools()
+    agent = build_react_agent(tools)
+    query = "Calculate order total for 2 items of SKU 'ABC' at $125 each with discount code SAVE15."
     print(f"User Query: {query}\n")
 
-    res = agent.invoke({"messages": [("user", query)]})
+    res = await agent.ainvoke({"messages": [("user", query)]})
     for msg in res["messages"]:
         if getattr(msg, "tool_calls", None):
             print(f"[Tool Call]: {msg.tool_calls[0]['name']} -> {msg.tool_calls[0]['args']}")
@@ -23,6 +25,10 @@ def main():
             print(f"[Agent Response]: {text}")
 
     print("=" * 65)
+
+
+def main():
+    asyncio.run(run_agent())
 
 
 if __name__ == "__main__":
